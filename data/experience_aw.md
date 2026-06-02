@@ -11,6 +11,7 @@ This background is relevant because it gives him practical understanding of heal
 Thiago has professional experience as an electrical planner.
 
 This experience involved technical planning, documentation, coordination, and work in complex building and hospital environments.
+Thiago has worked in different teams and has had leadership in Projects in the Hirslanden Klinik and Schulthessklinik
 
 ---
 
