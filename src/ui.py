@@ -7,9 +7,10 @@ from src.chatbot import ask_chatbot
 from src.knowledge_base import load_knowledge_base
 
 
-CV_PATH = Path(
-    r"C:\Users\StartKlar\Desktop\Bewerbungsdossier\Bewerbungsunterlagen Thiago Braganca\CV Thiago Braganca.pdf"
-)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+CV_FILE_NAME = "CV Thiago Braganca.pdf"
+CV_PATH = PROJECT_ROOT / "static" / CV_FILE_NAME
+CV_URL = f"/app/static/{quote(CV_FILE_NAME)}"
 CONTACT_EMAIL = "thiago.braganca.carvalho@gmail.com"
 
 
@@ -285,6 +286,27 @@ def apply_custom_styles() -> None:
             transform: translateY(-1px);
         }
 
+        .sidebar-action-link {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 8px;
+            color: var(--card) !important;
+            display: inline-flex;
+            justify-content: center;
+            min-height: 2.75rem;
+            text-decoration: none !important;
+            transition: all 140ms ease;
+            width: 100%;
+        }
+
+        .sidebar-action-link:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--card) !important;
+            transform: translateY(-1px);
+        }
+
         [data-testid="stChatMessage"] {
             background: var(--card);
             border: 1px solid var(--line);
@@ -417,12 +439,13 @@ def render_cv_download() -> None:
         st.caption("CV file not found on this machine.")
         return
 
-    st.download_button(
-        label="Download CV",
-        data=CV_PATH.read_bytes(),
-        file_name="CV Thiago Braganca.pdf",
-        mime="application/pdf",
-        use_container_width=True,
+    st.markdown(
+        f"""
+        <a class="sidebar-action-link" href="{CV_URL}" target="_blank">
+            Download CV
+        </a>
+        """,
+        unsafe_allow_html=True,
     )
 
 
