@@ -1,32 +1,99 @@
-# Experience
+# Experience: Electrical Planning and Hospital Infrastructure
 
-## Kantonsspital Aarau - Data Science & AI Engineering Internship
+Before focusing strongly on Medical Informatics, Data Science, and AI, Thiago Bragança Carvalho built experience in electrical planning and technical hospital infrastructure environments.
 
-Thiago worked on the validation of a RAG-based ICD-10 recommender system. The project compared DXC-generated ICD-10 predictions against SAP-coded reference diagnoses.
+This background is relevant because it gives him practical understanding of healthcare buildings, technical systems, stakeholder coordination, and hospital project constraints.
 
-Main activities:
-- Python-based data analysis
-- ICD-10 code comparison
-- Evaluation of main and secondary diagnoses
-- Top-k accuracy analysis
-- Wu-Palmer similarity analysis
-- Chapter-level benchmark reporting
-- Clinical AI validation
+---
 
-Key results:
-- Top-1 exact match for main diagnoses: 21.96%
-- Top-5 exact match for main diagnoses: 45.57%
-- Hit-rate for main diagnoses: 49.13%
+## Professional Background
 
-## Lake Lucerne Institute - iMove Project
+Thiago has professional experience as an electrical planner.
 
-Thiago worked on iMove, a clinical application for assessing upper-extremity movement quality in stroke rehabilitation.
+This experience involved technical planning, documentation, coordination, and work in complex building and hospital environments.
 
-Main activities:
-- Python development
-- PySide6 and QML interface development
-- OpenCV camera preview
-- FFmpeg video recording
-- UDP communication between tablet and PC
-- SFTP file transfer
-- Usability improvements for clinical workflows
+---
+
+## Hospital and Healthcare Infrastructure Context
+
+Thiago has worked on or been involved with hospital-related planning contexts, including technical building systems and infrastructure coordination.
+
+Relevant areas include:
+
+- Hospital infrastructure projects
+- Electrical planning
+- Building technology coordination
+- Technical documentation
+- Planning workflows
+- Safety-relevant systems
+- Coordination with stakeholders
+- Hospital-specific constraints
+
+---
+
+## Tools and Workflows
+
+Thiago has experience with technical planning tools and workflows such as:
+
+- Revit
+- BIM-related workflows
+- IFC coordination
+- Technical documentation
+- Project coordination
+- Drawing and planning review
+- Building services planning
+
+---
+
+## Relevance to Healthcare AI
+
+This experience is useful for Healthcare AI and Medical Informatics because hospitals are complex technical environments.
+
+Thiago's infrastructure background helps him understand that healthcare technology must fit into:
+
+- Existing systems
+- Real buildings
+- Clinical workflows
+- Technical constraints
+- Stakeholder expectations
+- Safety requirements
+- Operational limitations
+
+This gives him a broader perspective than someone who only knows software development.
+
+---
+
+## Transferable Skills
+
+Thiago's electrical planning background helped him develop transferable skills such as:
+
+- Structured technical thinking
+- Documentation discipline
+- Problem analysis
+- Coordination with different stakeholders
+- Understanding complex systems
+- Working in regulated or safety-relevant environments
+- Communicating technical information clearly
+- Managing details in complex projects
+
+---
+
+## Why This Matters
+
+Thiago's transition from technical planning into Medical Informatics and AI is one of his differentiators.
+
+He brings:
+
+- Practical technical project experience
+- Healthcare environment understanding
+- Software and data skills
+- AI validation experience
+- Medical Informatics education
+
+This combination makes him suitable for roles where AI and software need to work in real healthcare organizations.
+
+---
+
+## Interview Summary
+
+Thiago has a background in electrical planning and hospital infrastructure projects. This gives him practical understanding of healthcare environments, technical systems, documentation, coordination, and real-world constraints. Combined with his Medical Informatics and AI experience, this creates a strong interdisciplinary profile.

@@ -1,4 +1,5 @@
 from pathlib import Path
+from urllib.parse import quote
 
 import streamlit as st
 
@@ -9,6 +10,7 @@ from src.knowledge_base import load_knowledge_base
 CV_PATH = Path(
     r"C:\Users\StartKlar\Desktop\Bewerbungsdossier\Bewerbungsunterlagen Thiago Braganca\CV Thiago Braganca.pdf"
 )
+CONTACT_EMAIL = "thiago.braganca.carvalho@gmail.com"
 
 
 SUGGESTED_QUESTIONS = [
@@ -262,6 +264,27 @@ def apply_custom_styles() -> None:
             border-color: var(--primary);
         }
 
+        [data-testid="stSidebar"] div[data-testid="stLinkButton"] > a {
+            align-items: center;
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            color: var(--card);
+            display: inline-flex;
+            justify-content: center;
+            min-height: 2.75rem;
+            text-decoration: none;
+            transition: all 140ms ease;
+            width: 100%;
+        }
+
+        [data-testid="stSidebar"] div[data-testid="stLinkButton"] > a:hover {
+            background: var(--dark-accent);
+            border-color: var(--dark-accent);
+            color: var(--card);
+            transform: translateY(-1px);
+        }
+
         [data-testid="stChatMessage"] {
             background: var(--card);
             border: 1px solid var(--line);
@@ -377,6 +400,9 @@ def render_sidebar() -> str:
         render_cv_download()
 
         st.divider()
+        render_interview_email_button()
+
+        st.divider()
         if st.button("Clear chat", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
@@ -396,6 +422,36 @@ def render_cv_download() -> None:
         data=CV_PATH.read_bytes(),
         file_name="CV Thiago Braganca.pdf",
         mime="application/pdf",
+        use_container_width=True,
+    )
+
+
+def render_interview_email_button() -> None:
+    st.markdown("#### Contact")
+
+    subject = "Interview availability for Thiago Braganca Carvalho"
+    body = """Hello Thiago,
+
+I reviewed your profile and would like to schedule an interview with you.
+
+Would one of the following time slots work for you?
+
+- [Option 1: Date, time, timezone]
+- [Option 2: Date, time, timezone]
+- [Option 3: Date, time, timezone]
+
+Best regards,
+[Your name]
+"""
+    mailto_link = (
+        f"mailto:{CONTACT_EMAIL}"
+        f"?subject={quote(subject)}"
+        f"&body={quote(body)}"
+    )
+
+    st.link_button(
+        "Suggest interview time",
+        mailto_link,
         use_container_width=True,
     )
 
