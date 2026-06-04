@@ -38,6 +38,21 @@ ANSWER_STYLE_OPTIONS = [
     "STAR interview format",
 ]
 
+UNANSWERED_ANSWER_PHRASES = [
+    "not available in the knowledge base",
+    "not available in the provided context",
+    "i don't have enough information",
+    "i cannot answer based on the available information",
+]
+
+TECHNICAL_ERROR_PHRASES = [
+    "technical error",
+    "api quota",
+    "connectivity",
+    "configuration",
+    "connection",
+]
+
 
 def apply_custom_styles() -> None:
     st.markdown(
@@ -472,15 +487,7 @@ def render_sidebar() -> str:
         answer_style = st.radio("Answer style", ANSWER_STYLE_OPTIONS)
 
         st.divider()
-        st.markdown(
-            """
-            <p class="sidebar-note">
-            Answers are generated from Thiago's structured profile, projects,
-            skills, and interview-preparation knowledge base.
-            </p>
-            """,
-            unsafe_allow_html=True,
-        )
+        render_unanswered_questions_panel()
 
         st.divider()
         render_cv_download()
@@ -494,6 +501,77 @@ def render_sidebar() -> str:
             st.rerun()
 
         return answer_style
+
+
+def initialize_session_state() -> None:
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    if "unanswered_questions" not in st.session_state:
+        st.session_state.unanswered_questions = []
+
+
+def is_unanswered_answer(answer: str) -> bool:
+    normalized_answer = answer.lower()
+
+    if any(phrase in normalized_answer for phrase in TECHNICAL_ERROR_PHRASES):
+        return False
+
+    return any(phrase in normalized_answer for phrase in UNANSWERED_ANSWER_PHRASES)
+
+
+def add_unanswered_question(question: str) -> None:
+    cleaned_question = question.strip()
+    if not cleaned_question:
+        return
+
+    existing_questions = {
+        saved_question.strip().lower()
+        for saved_question in st.session_state.unanswered_questions
+    }
+    if cleaned_question.lower() not in existing_questions:
+        st.session_state.unanswered_questions.append(cleaned_question)
+
+
+def format_unanswered_questions() -> str:
+    return "\n".join(
+        f"{index}. {question}"
+        for index, question in enumerate(st.session_state.unanswered_questions, start=1)
+    )
+
+
+def render_unanswered_questions_panel() -> None:
+    st.markdown("#### Unanswered questions")
+    st.caption(
+        "If the assistant cannot answer something from the current knowledge base, "
+        "the question is saved here. This helps Thiago improve the assistant after "
+        "the interview."
+    )
+
+    unanswered_questions = st.session_state.unanswered_questions
+    if not unanswered_questions:
+        st.caption("No unanswered questions yet.")
+        return
+
+    formatted_questions = format_unanswered_questions()
+    st.markdown(formatted_questions)
+    st.text_area(
+        "Copy unanswered questions",
+        value=formatted_questions,
+        height=130,
+        key=f"copy_unanswered_questions_{len(unanswered_questions)}",
+    )
+    st.download_button(
+        "Download unanswered questions",
+        data=formatted_questions,
+        file_name="unanswered_questions.txt",
+        mime="text/plain",
+        use_container_width=True,
+    )
+
+    if st.button("Clear unanswered questions", use_container_width=True):
+        st.session_state.unanswered_questions = []
+        st.rerun()
 
 
 def render_sidebar_profile() -> None:
@@ -725,6 +803,9 @@ def handle_user_question(user_question: str, vector_index: list[dict], answer_st
         st.markdown(answer)
         render_sources_used(sources)
 
+    if is_unanswered_answer(answer):
+        add_unanswered_question(user_question)
+
     st.session_state.messages.append(
         {"role": "assistant", "content": answer, "sources": sources}
     )
@@ -734,8 +815,7 @@ def run_app() -> None:
     st.set_page_config(page_title="Ask Thiago AI", page_icon="🤖", layout="wide")
     apply_custom_styles()
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    initialize_session_state()
 
     answer_style = render_sidebar()
     saved_index_exists = (PROJECT_ROOT / DEFAULT_INDEX_PATH).exists()
