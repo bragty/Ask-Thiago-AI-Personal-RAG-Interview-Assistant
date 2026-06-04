@@ -14,7 +14,20 @@ Thiago currently works as a Junior Project Manager in electrical planning at Ams
 
 This role connects to his earlier professional background in electrical planning, hospital infrastructure, building technology, technical coordination, and project work.
 
-### Data Scientist at Kantonsspital Aarau
+### Software Development at Lake Lucerne Institu
+
+Thiago worked at LLUI a Research Institute that works deeply with Cereneo
+
+Relevant topics include:
+
+* Software Development
+* Documentation
+* Camera Based System
+* Creating Dashboards
+
+
+
+### Data Scientist and AI Engineering at Kantonsspital Aarau
 
 Thiago currently works as a Data Scientist at Kantonsspital Aarau until August.
 

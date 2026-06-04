@@ -374,8 +374,24 @@ def apply_custom_styles() -> None:
             padding: 0.35rem;
         }
 
-        [data-testid="stChatMessage"] p {
-            color: var(--text);
+        [data-testid="stChatMessage"] p,
+        [data-testid="stChatMessage"] li,
+        [data-testid="stChatMessage"] ol,
+        [data-testid="stChatMessage"] ul,
+        [data-testid="stChatMessage"] span,
+        [data-testid="stChatMessage"] strong {
+            color: var(--text) !important;
+        }
+
+        [data-testid="stExpander"] summary,
+        [data-testid="stExpander"] summary p {
+            color: #94A3B8 !important;
+        }
+
+        .sources-used,
+        .sources-used li {
+            color: #94A3B8 !important;
+            font-size: 0.84rem;
         }
 
         [data-testid="stBottom"],
@@ -631,10 +647,14 @@ def render_sources_used(sources: list[dict]) -> None:
         return
 
     with st.expander("Sources used"):
-        for source in sources:
-            st.markdown(
-                f"- {source['source']} - similarity: {source['similarity']:.3f}"
-            )
+        source_items = "\n".join(
+            f"<li>{source['source']} - similarity: {source['similarity']:.3f}</li>"
+            for source in sources
+        )
+        st.markdown(
+            f'<ul class="sources-used">{source_items}</ul>',
+            unsafe_allow_html=True,
+        )
 
 
 def render_footer() -> None:
