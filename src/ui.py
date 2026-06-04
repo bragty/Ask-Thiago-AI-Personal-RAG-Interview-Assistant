@@ -16,6 +16,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CV_FILE_NAME = "CV Thiago Braganca.pdf"
 CV_PATH = PROJECT_ROOT / "src" / "static" / CV_FILE_NAME
 CONTACT_EMAIL = "thiago.braganca.carvalho@gmail.com"
+CONTACT_PHONE = "+41 78 825 74 28"
+CONTACT_LOCATION = "Dübendorf, Zürich"
+CONTACT_BIRTHDATE = "04.10.2001"
+LINKEDIN_URL = "https://www.linkedin.com/in/thiago-bragan%C3%A7a-574399203"
 
 
 SUGGESTED_QUESTIONS = [
@@ -227,6 +231,39 @@ def apply_custom_styles() -> None:
             padding: 0.28rem 0.65rem;
         }
 
+        .sidebar-profile {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            padding: 0.9rem;
+        }
+
+        .sidebar-profile h3 {
+            color: var(--card);
+            font-size: 1.15rem;
+            line-height: 1.25;
+            margin: 0 0 0.75rem;
+        }
+
+        .sidebar-profile-row {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 0.88rem;
+            line-height: 1.35;
+            margin-top: 0.5rem;
+            overflow-wrap: anywhere;
+        }
+
+        .sidebar-profile-label {
+            color: rgba(255, 255, 255, 0.58);
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0;
+            margin-bottom: 0.08rem;
+            text-transform: uppercase;
+        }
+
         .quiet-note {
             border-top: 1px solid var(--line);
             color: var(--muted);
@@ -414,24 +451,9 @@ def render_sidebar() -> str:
             unsafe_allow_html=True,
         )
 
-        answer_style = st.radio("Answer style", ANSWER_STYLE_OPTIONS)
+        render_sidebar_profile()
 
-        st.divider()
-        st.markdown("#### Education")
-        st.markdown(
-            """
-            <p class="sidebar-note">
-            Medical Informatics at ZHAW, connecting healthcare, software,
-            data, medical technology, and digital health systems.
-            </p>
-            <span class="sidebar-pill">Medical Informatics</span>
-            <span class="sidebar-pill">Healthcare IT</span>
-            <span class="sidebar-pill">Data Science</span>
-            <span class="sidebar-pill">Machine Learning</span>
-            <span class="sidebar-pill">HL7 / FHIR</span>
-            """,
-            unsafe_allow_html=True,
-        )
+        answer_style = st.radio("Answer style", ANSWER_STYLE_OPTIONS)
 
         st.divider()
         st.markdown(
@@ -456,6 +478,34 @@ def render_sidebar() -> str:
             st.rerun()
 
         return answer_style
+
+
+def render_sidebar_profile() -> None:
+    st.markdown(
+        f"""
+        <div class="sidebar-profile">
+            <h3>Thiago<br>Bragança Carvalho</h3>
+            <div class="sidebar-profile-row">
+                <span class="sidebar-profile-label">Born</span>
+                {CONTACT_BIRTHDATE}
+            </div>
+            <div class="sidebar-profile-row">
+                <span class="sidebar-profile-label">Location</span>
+                {CONTACT_LOCATION}
+            </div>
+            <div class="sidebar-profile-row">
+                <span class="sidebar-profile-label">Email</span>
+                {CONTACT_EMAIL}
+            </div>
+            <div class="sidebar-profile-row">
+                <span class="sidebar-profile-label">Phone</span>
+                {CONTACT_PHONE}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.link_button("LinkedIn profile", LINKEDIN_URL, use_container_width=True)
 
 
 def render_cv_download() -> None:
