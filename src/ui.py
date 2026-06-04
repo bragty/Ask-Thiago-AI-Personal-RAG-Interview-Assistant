@@ -417,14 +417,18 @@ def render_sidebar() -> str:
         answer_style = st.radio("Answer style", ANSWER_STYLE_OPTIONS)
 
         st.divider()
-        st.markdown("#### Recruiter lens")
+        st.markdown("#### Education")
         st.markdown(
             """
-            <span class="sidebar-pill">Healthcare AI</span>
-            <span class="sidebar-pill">Clinical validation</span>
-            <span class="sidebar-pill">Python</span>
-            <span class="sidebar-pill">Data Science</span>
+            <p class="sidebar-note">
+            Medical Informatics at ZHAW, connecting healthcare, software,
+            data, medical technology, and digital health systems.
+            </p>
             <span class="sidebar-pill">Medical Informatics</span>
+            <span class="sidebar-pill">Healthcare IT</span>
+            <span class="sidebar-pill">Data Science</span>
+            <span class="sidebar-pill">Machine Learning</span>
+            <span class="sidebar-pill">HL7 / FHIR</span>
             """,
             unsafe_allow_html=True,
         )
