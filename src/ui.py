@@ -4,7 +4,12 @@ from urllib.parse import quote
 import streamlit as st
 
 from src.chatbot import ask_chatbot
-from src.knowledge_base import load_knowledge_base
+from src.rag import (
+    DEFAULT_INDEX_PATH,
+    format_chunks_for_prompt,
+    get_or_build_vector_index,
+    retrieve_relevant_chunks,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -547,6 +552,19 @@ def render_chat_history() -> None:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
+            if message["role"] == "assistant":
+                render_sources_used(message.get("sources", []))
+
+
+def render_sources_used(sources: list[dict]) -> None:
+    if not sources:
+        return
+
+    with st.expander("Sources used"):
+        for source in sources:
+            st.markdown(
+                f"- {source['source']} - similarity: {source['similarity']:.3f}"
+            )
 
 
 def render_footer() -> None:
@@ -562,7 +580,24 @@ def render_footer() -> None:
     )
 
 
-def handle_user_question(user_question: str, knowledge_base: str, answer_style: str) -> None:
+def sources_from_chunks(chunks: list[dict]) -> list[dict]:
+    return [
+        {
+            "source": chunk["source"],
+            "chunk_id": chunk["chunk_id"],
+            "similarity": chunk.get("similarity", 0.0),
+        }
+        for chunk in chunks
+    ]
+
+
+@st.cache_resource
+def load_vector_index() -> list[dict]:
+    # Streamlit caching prevents rebuilding or reloading embeddings on every rerun.
+    return get_or_build_vector_index()
+
+
+def handle_user_question(user_question: str, vector_index: list[dict], answer_style: str) -> None:
     st.session_state.messages.append({"role": "user", "content": user_question})
 
     with st.chat_message("user"):
@@ -570,10 +605,39 @@ def handle_user_question(user_question: str, knowledge_base: str, answer_style: 
 
     with st.chat_message("assistant"):
         with st.spinner("Preparing a grounded answer..."):
-            answer = ask_chatbot(user_question, knowledge_base, answer_style)
-        st.markdown(answer)
+            try:
+                if not vector_index:
+                    raise ValueError(
+                        "The vector index is empty or unavailable. "
+                        "Run `python -m src.build_index` and try again."
+                    )
 
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+                relevant_chunks = retrieve_relevant_chunks(
+                    question=user_question,
+                    vector_index=vector_index,
+                    top_k=5,
+                )
+                retrieved_context = format_chunks_for_prompt(relevant_chunks)
+                answer = ask_chatbot(
+                    question=user_question,
+                    retrieved_context=retrieved_context,
+                    answer_style=answer_style,
+                )
+                sources = sources_from_chunks(relevant_chunks)
+            except Exception as error:
+                answer = (
+                    "Sorry, something went wrong while retrieving a grounded answer. "
+                    "This may be related to API quota, connectivity, or configuration.\n\n"
+                    f"Technical error: `{error}`"
+                )
+                sources = []
+
+        st.markdown(answer)
+        render_sources_used(sources)
+
+    st.session_state.messages.append(
+        {"role": "assistant", "content": answer, "sources": sources}
+    )
 
 
 def run_app() -> None:
@@ -584,9 +648,27 @@ def run_app() -> None:
         st.session_state.messages = []
 
     answer_style = render_sidebar()
-    knowledge_base = load_knowledge_base()
+    saved_index_exists = (PROJECT_ROOT / DEFAULT_INDEX_PATH).exists()
 
     render_header()
+
+    try:
+        with st.spinner("Loading RAG index..."):
+            vector_index = load_vector_index()
+    except Exception as error:
+        vector_index = []
+        st.error(
+            "The RAG vector index could not be loaded or built. "
+            "Run `python -m src.build_index` after confirming your OpenAI API key is configured.\n\n"
+            f"Technical error: `{error}`"
+        )
+
+    if not saved_index_exists and vector_index:
+        st.warning(
+            "Saved vector index was not found, so the app built embeddings dynamically. "
+            "Run `python -m src.build_index` to save and reuse the index."
+        )
+
     render_suggested_questions()
 
     selected_question = st.session_state.pop("selected_question", None)
@@ -597,6 +679,6 @@ def run_app() -> None:
         user_question = selected_question
 
     if user_question:
-        handle_user_question(user_question, knowledge_base, answer_style)
+        handle_user_question(user_question, vector_index, answer_style)
 
     render_footer()

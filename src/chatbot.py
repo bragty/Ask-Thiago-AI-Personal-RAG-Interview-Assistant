@@ -2,7 +2,7 @@ from src.config import get_openai_client
 from src.prompts import ANSWER_STYLE_INSTRUCTIONS, SYSTEM_PROMPT
 
 
-def ask_chatbot(question: str, knowledge_base: str, answer_style: str) -> str:
+def ask_chatbot(question: str, retrieved_context: str, answer_style: str) -> str:
     try:
         client = get_openai_client()
 
@@ -16,14 +16,20 @@ def ask_chatbot(question: str, knowledge_base: str, answer_style: str) -> str:
                 {
                     "role": "user",
                     "content": f"""
-Knowledge base:
-{knowledge_base}
+Retrieved context:
+{retrieved_context}
 
 Answer style:
 {answer_style}
 
 Question:
 {question}
+
+Use only the retrieved context above to answer.
+If the answer is not available in the retrieved context, say that the information is not available in the knowledge base.
+Do not invent details.
+Keep the answer useful for recruiters and interviewers.
+Mention the source files used at the end when possible.
 
 {ANSWER_STYLE_INSTRUCTIONS}
 """,
