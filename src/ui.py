@@ -520,10 +520,10 @@ def is_unanswered_answer(answer: str) -> bool:
     return any(phrase in normalized_answer for phrase in UNANSWERED_ANSWER_PHRASES)
 
 
-def add_unanswered_question(question: str) -> None:
+def add_unanswered_question(question: str) -> bool:
     cleaned_question = question.strip()
     if not cleaned_question:
-        return
+        return False
 
     existing_questions = {
         saved_question.strip().lower()
@@ -531,6 +531,9 @@ def add_unanswered_question(question: str) -> None:
     }
     if cleaned_question.lower() not in existing_questions:
         st.session_state.unanswered_questions.append(cleaned_question)
+        return True
+
+    return False
 
 
 def format_unanswered_questions() -> str:
@@ -544,8 +547,7 @@ def render_unanswered_questions_panel() -> None:
     st.markdown("#### Unanswered questions")
     st.caption(
         "If the assistant cannot answer something from the current knowledge base, "
-        "the question is saved here. This helps Thiago improve the assistant after "
-        "the interview."
+        "the question is saved here."
     )
 
     unanswered_questions = st.session_state.unanswered_questions
@@ -554,7 +556,6 @@ def render_unanswered_questions_panel() -> None:
         return
 
     formatted_questions = format_unanswered_questions()
-    st.markdown(formatted_questions)
     st.text_area(
         "Copy unanswered questions",
         value=formatted_questions,
@@ -803,12 +804,16 @@ def handle_user_question(user_question: str, vector_index: list[dict], answer_st
         st.markdown(answer)
         render_sources_used(sources)
 
+    new_unanswered_question_added = False
     if is_unanswered_answer(answer):
-        add_unanswered_question(user_question)
+        new_unanswered_question_added = add_unanswered_question(user_question)
 
     st.session_state.messages.append(
         {"role": "assistant", "content": answer, "sources": sources}
     )
+
+    if new_unanswered_question_added:
+        st.rerun()
 
 
 def run_app() -> None:
