@@ -14,8 +14,7 @@ from src.rag import (
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CV_FILE_NAME = "CV Thiago Braganca.pdf"
-CV_PATH = PROJECT_ROOT / "static" / CV_FILE_NAME
-CV_URL = f"/app/static/{quote(CV_FILE_NAME)}"
+CV_PATH = PROJECT_ROOT / "src" / "static" / CV_FILE_NAME
 CONTACT_EMAIL = "thiago.braganca.carvalho@gmail.com"
 
 
@@ -270,6 +269,24 @@ def apply_custom_styles() -> None:
             border-color: var(--primary);
         }
 
+        [data-testid="stSidebar"] div[data-testid="stDownloadButton"] > button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 8px;
+            color: var(--card);
+            min-height: 2.75rem;
+            text-align: center;
+            transition: all 140ms ease;
+            width: 100%;
+        }
+
+        [data-testid="stSidebar"] div[data-testid="stDownloadButton"] > button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--card);
+            transform: translateY(-1px);
+        }
+
         [data-testid="stSidebar"] div[data-testid="stLinkButton"] > a {
             align-items: center;
             background: var(--primary);
@@ -444,13 +461,12 @@ def render_cv_download() -> None:
         st.caption("CV file not found on this machine.")
         return
 
-    st.markdown(
-        f"""
-        <a class="sidebar-action-link" href="{CV_URL}" target="_blank">
-            Download CV
-        </a>
-        """,
-        unsafe_allow_html=True,
+    st.download_button(
+        "Download CV",
+        data=CV_PATH.read_bytes(),
+        file_name=CV_FILE_NAME,
+        mime="application/pdf",
+        use_container_width=True,
     )
 
 
